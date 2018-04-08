@@ -1,0 +1,82 @@
+<html>
+	<head>
+		<title>shader</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="js/three.js"></script>
+		<script id="vertexShader" type="x-shader/x-vertex">
+			varying vec2 vUV;
+			void main()
+			{
+				vUV = uv;
+				gl_Position = projectionMatrix 
+					* modelViewMatrix * vec4(position, 1.0);
+			}
+		</script>
+		<script id="fragmentShader" type="x-shader/x-fragment">
+			uniform vec3 color;
+			uniform sampler2D texture;
+
+			varying vec2 vUV;
+
+			void main()
+			{
+				vec4 tcolor = texture2D(texture, vUV);
+				gl_FragColor = vec4(color * tcolor.xyz, 1.0);		
+			}
+		</script>
+		<script>
+			// renderer
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+
+			// scene
+			var scene = new THREE.Scene();
+
+			// camera
+			var camera = new THREE.PerspectiveCamera(90, 
+				window.innerWidth/window.innerHeight, 1, 1000);
+
+			// geometry, material, mesh
+			var geometry = new THREE.BoxGeometry(1, 1, 1);
+
+			// Cross-Origin Resource Sharing policy issue: 
+			// python -m SimpleHTTPServer
+			// access localhost:8000
+			var material = new THREE.ShaderMaterial({
+				uniforms: {
+					color: { value: new THREE.Color(0xFFFFFF) },
+					texture: { value: new THREE.TextureLoader().load(
+						"textures/water.jpg") },
+				},
+				vertexShader: document.getElementById('vertexShader').textContent,
+				fragmentShader: document.getElementById('fragmentShader').textContent,
+			});
+
+			var mesh = new THREE.Mesh(geometry, material);
+			mesh.position.z = -2;
+
+			scene.add(mesh);
+	
+			// animate function
+			var animate = function() {
+				// next frame
+				requestAnimationFrame(animate);
+
+				// update
+				//mesh.rotation.y += 0.1;
+			
+				// render
+				renderer.render(scene, camera)
+			};
+
+			// trigger
+			animate();
+		</script>
+	</body>
+</html>
