@@ -1,0 +1,48 @@
+<html>
+	<head>
+		<title>cube</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="js/three.js"></script>
+		<script>
+			// renderer
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.body.appendChild(renderer.domElement);
+
+			// scene
+			var scene = new THREE.Scene();
+
+			// camera
+			var camera = new THREE.PerspectiveCamera(90, 
+				window.innerWidth/window.innerHeight, 1, 1000);
+
+			// geometry, material, mesh
+			var geometry = new THREE.BoxGeometry(1, 1, 1);
+			var material = new THREE.MeshBasicMaterial({color: 0xFF0000});
+			var mesh = new THREE.Mesh(geometry, material);
+			mesh.position.z = -2
+
+			scene.add(mesh)
+	
+			// animate function
+			var animate = function() {
+				// next frame
+				requestAnimationFrame(animate);
+
+				// update
+				mesh.rotation.y += 0.1;
+			
+				// render
+				renderer.render(scene, camera)
+			};
+
+			// trigger
+			animate();
+		</script>
+	</body>
+</html>
