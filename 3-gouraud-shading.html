@@ -18,7 +18,9 @@
 			void main()
 			{
 				float cosine = max(dot(normalize(normal), normalize(lightDir)), 0.0);
+
 				vColor = polygonMaterial * cosine * lightColor;
+				//vColor = polygonMaterial * normal * lightColor;
 
 				gl_Position = projectionMatrix 
 					* modelViewMatrix * vec4(position, 1.0);

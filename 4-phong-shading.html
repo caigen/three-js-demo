@@ -29,8 +29,11 @@
 			void main()
 			{
 				float cosine = max(dot(normalize(vNormal), normalize(lightDir)), 0.0);
-
+				
+				// the major diff between phong shading and gouraud shading:
+				// the lambert's cosine law is not linear.
 				vec3 color = polygonMaterial * cosine * lightColor;
+				//vec3 color = polygonMaterial * vNormal * lightColor;
 
 				gl_FragColor = vec4(color, 1.0);	
 			}
