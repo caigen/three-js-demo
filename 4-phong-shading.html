@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>flat shading</title>
+		<title>phong shading</title>
 		<style>
 			body { margin: 0; }
 			canvas { width: 100%; height: 100% }
@@ -9,28 +9,30 @@
 	<body>
 		<script src="js/three.js"></script>
 		<script id="vertexShader" type="x-shader/x-vertex">
-			uniform vec3 lightColor;
-			uniform vec3 lightDir;
-			uniform vec3 polygonMaterial;
-
-			varying vec3 vColor;
+			varying vec3 vNormal;
 
 			void main()
 			{
-				float cosine = max(dot(normalize(normal), normalize(lightDir)), 0.0);
-				vColor = polygonMaterial * cosine * lightColor;
+				vNormal = normal;
 
 				gl_Position = projectionMatrix 
 					* modelViewMatrix * vec4(position, 1.0);
 			}
 		</script>
 		<script id="fragmentShader" type="x-shader/x-fragment">
+			uniform vec3 lightColor;
+			uniform vec3 lightDir;
+			uniform vec3 polygonMaterial;
 
-			varying vec3 vColor;
+			varying vec3 vNormal;
 
 			void main()
 			{
-				gl_FragColor = vec4(vColor, 1.0);	
+				float cosine = max(dot(normalize(vNormal), normalize(lightDir)), 0.0);
+
+				vec3 color = polygonMaterial * cosine * lightColor;
+
+				gl_FragColor = vec4(color, 1.0);	
 			}
 		</script>
 		<script>
